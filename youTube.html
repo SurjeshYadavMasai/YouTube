@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/239b8919c6.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>You Tube</title>
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+      }
+      #video-yt {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px;
+        width: 100%;
+        margin: auto;
+        padding: 5px;
+        margin-top: 10px;
+      
+      }
+
+      #nav-yt {
+        text-align: center;
+        margin-top: 10px;
+         
+      }
+      input {
+        width: 500px;
+        height: 40px;
+      }
+      button {
+        height: 40px;
+        padding: 0px 30px;
+        margin-left: -5px;
+      }
+      #video-yt h4 {
+        margin: 5px;
+        padding: 5px;
+      }
+      #video-yt p {
+        margin: 0px 5px 10px;
+        padding: 0px 5px;
+        color: rgb(100, 99, 99);
+        vertical-align: text-bottom;
+      }
+      #video-yt p span {
+        background-color: rgb(100, 99, 99);
+        color: white;
+        font-size: 10px;
+        border-radius: 70%;
+        padding: 2px 3px;
+        vertical-align: middle;
+        margin-left: 3px;
+      }
+     
+    </style>
+  </head>
+  <body>
+    <div id="nav-yt">
+     
+      <input type="text" placeholder="Search" id="search-yt" />
+      <button onclick="getData();"><i class="fas fa-search"></i></button>
+    </div>
+    <div id="video-yt"></div>
+  </body>
+</html>
+<script>
+  let API = "AIzaSyCnqvOa5JvbmVkks0UCCZTV2s-iBQFd9aY";
+
+  let getData = async () => {
+    try {
+      let se = document.getElementById("search-yt").value || `masai school`;
+      let url=`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API}&q=${se}&type=video&maxResults=20`
+      let res = await fetch(url);
+      let data = await res.json();
+      let videoData = data.items;
+      console.log(videoData);
+      displayData(videoData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+let getData1 = async () => {
+    try {
+      // let se = document.getElementById("search-yt").value || `masai school`;
+      let url=`https://www.googleapis.com/youtube/v3/search?chart=mostPopular&regionCode=IN&part=snippet&key=${API}&type=video&maxResults=20`
+      let res = await fetch(url);
+      let data = await res.json();
+     
+      let videoData = data.items;
+      console.log(videoData);
+      displayData(videoData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+getData1()
+  
+
+  let displayData = (data) => {
+    document.getElementById("video-yt").innerHTML = "";
+    data.forEach((ele) => {
+      const {
+        id: { videoId },
+        snippet: {
+          thumbnails: {
+            medium: { url },
+          },
+        },
+        snippet: { title },
+        snippet: { channelTitle },
+      } = ele;
+      // let div = document.createElement("div");
+      // let video = document.createElement("iframe");
+      // video.src = `https://www.youtube.com/embed/${videoId}`;
+      let div = document.createElement("div");
+      let thumbnails = document.createElement("img");
+      thumbnails.src = url;
+      thumbnails.addEventListener("click", () => {
+        let data_yt = [];
+        data_yt.push(ele);
+        localStorage.setItem("data_yt", JSON.stringify(data_yt));
+        window.location.href = "youTubeP.html";
+      });
+      let title_yt = document.createElement("h4");
+      title_yt.innerHTML = title;
+      let channelTitle_yt = document.createElement("p");
+      channelTitle_yt.innerHTML = `${channelTitle}   <span> ✓ </span>`;
+
+      div.append(thumbnails, title_yt, channelTitle_yt);
+      document.getElementById("video-yt").append(div);
+    });
+  };
+</script>
